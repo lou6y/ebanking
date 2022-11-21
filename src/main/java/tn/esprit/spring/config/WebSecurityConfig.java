@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import tn.esprit.spring.security.AuthEntryPoint;
 import tn.esprit.spring.security.AuthTokenFilter;
-import tn.esprit.spring.services.impls.UserDetailsServiceImpl;
+import tn.esprit.spring.service.Implementation.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
