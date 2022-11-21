@@ -1,4 +1,4 @@
-package tn.esprit.spring.services.impls;
+package tn.esprit.spring.service.Implementation;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -9,11 +9,11 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tn.esprit.spring.dao.entities.RefreshToken;
-import tn.esprit.spring.dao.repositories.RefreshTokenRepository;
-import tn.esprit.spring.dao.repositories.UserRepo;
+import tn.esprit.spring.entity.RefreshToken;
 import tn.esprit.spring.refreshtoken.exception.TokenRefreshException;
-import tn.esprit.spring.services.inters.IRefreshTokenService;
+import tn.esprit.spring.repository.RefreshTokenRepository;
+import tn.esprit.spring.repository.UserRepo;
+import tn.esprit.spring.service.Interface.IRefreshTokenService;
 
 @Service
 public class RefreshTokenService implements IRefreshTokenService {

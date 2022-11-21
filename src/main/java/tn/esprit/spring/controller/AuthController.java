@@ -1,4 +1,4 @@
-package tn.esprit.spring.controllers;
+package tn.esprit.spring.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
@@ -25,23 +25,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import tn.esprit.spring.dao.entities.ERole;
-import tn.esprit.spring.dao.entities.RefreshToken;
-import tn.esprit.spring.dao.entities.Role;
-import tn.esprit.spring.dao.entities.User;
 import tn.esprit.spring.security.JwtUtils;
+import tn.esprit.spring.service.Implementation.UserDetailsImpl;
+import tn.esprit.spring.service.Interface.IRefreshTokenService;
+import tn.esprit.spring.service.Interface.IUserService;
 import tn.esprit.spring.model.LogOutRequest;
 import tn.esprit.spring.model.LoginRequest;
 import tn.esprit.spring.model.ResetPasswordRequest;
 import tn.esprit.spring.model.SignupRequest;
 import tn.esprit.spring.model.TokenRefreshRequest;
+import tn.esprit.spring.entity.ERole;
+import tn.esprit.spring.entity.RefreshToken;
+import tn.esprit.spring.entity.Role;
+import tn.esprit.spring.entity.User;
 import tn.esprit.spring.model.JwtResponse;
 import tn.esprit.spring.model.MessageResponse;
 import tn.esprit.spring.model.TokenRefreshResponse;
 import tn.esprit.spring.refreshtoken.exception.TokenRefreshException;
-import tn.esprit.spring.services.impls.UserDetailsImpl;
-import tn.esprit.spring.services.inters.IRefreshTokenService;
-import tn.esprit.spring.services.inters.IUserService;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)

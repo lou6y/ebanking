@@ -1,4 +1,4 @@
-package tn.esprit.spring.dao.repositories;
+package tn.esprit.spring.repository;
 
 
 
@@ -6,10 +6,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import tn.esprit.spring.config.StockApiConfig;
-import tn.esprit.spring.dao.entities.Stock;
+import tn.esprit.spring.entity.Stock;
 import tn.esprit.spring.exceptions.ApiException;
 import tn.esprit.spring.model.StockSearchResult;
-import tn.esprit.spring.services.impls.MyJsonMapper;
+import tn.esprit.spring.service.Implementation.MyJsonMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

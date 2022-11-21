@@ -1,4 +1,4 @@
-package tn.esprit.spring.services.impls;
+package tn.esprit.spring.service.Implementation;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -12,9 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import net.bytebuddy.utility.RandomString;
-import tn.esprit.spring.dao.entities.User;
-import tn.esprit.spring.dao.repositories.UserRepo;
-import tn.esprit.spring.services.inters.IUserService;
+import tn.esprit.spring.entity.User;
+import tn.esprit.spring.repository.UserRepo;
+import tn.esprit.spring.service.Interface.IUserService;
 
 @Service
 public class UserServiceImpl implements IUserService{

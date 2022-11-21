@@ -1,4 +1,4 @@
-package tn.esprit.spring.controllers;
+package tn.esprit.spring.controller;
 
 
 import java.util.List;
@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tn.esprit.spring.exceptions.ApiException;
-
-import tn.esprit.spring.dao.entities.Stock;
 import tn.esprit.spring.model.StockSearchResult;
-import tn.esprit.spring.dao.repositories.StockDataRepo;
+import tn.esprit.spring.repository.StockDataRepo;
+import tn.esprit.spring.entity.Stock;
 @RestController
 @RequestMapping("/api/stock")
 public class StockController {

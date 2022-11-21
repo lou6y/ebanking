@@ -1,11 +1,11 @@
-package tn.esprit.spring.services.impls;
+package tn.esprit.spring.service.Implementation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 
-import tn.esprit.spring.dao.entities.Stock;
+import tn.esprit.spring.entity.Stock;
 import tn.esprit.spring.model.StockSearchResult;
 
 import org.springframework.beans.factory.annotation.Autowired;

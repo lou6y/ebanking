@@ -1,4 +1,4 @@
-package tn.esprit.spring.controllers;
+package tn.esprit.spring.controller;
 
 
 import java.util.List;
@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import tn.esprit.spring.dao.entities.Investment;
-import tn.esprit.spring.dao.entities.SecuritiesAccount;
-import tn.esprit.spring.dao.entities.Stock;
-import tn.esprit.spring.dao.repositories.SecuritiesAccountRepo;
-import tn.esprit.spring.dao.repositories.StockDataRepo;
+import tn.esprit.spring.entity.Investment;
+import tn.esprit.spring.entity.SecuritiesAccount;
+import tn.esprit.spring.entity.Stock;
 import tn.esprit.spring.exceptions.ApiException;
+import tn.esprit.spring.repository.SecuritiesAccountRepo;
+import tn.esprit.spring.repository.StockDataRepo;
 
 @RestController
 @RequestMapping("/api/investment")

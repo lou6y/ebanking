@@ -1,4 +1,4 @@
-package tn.esprit.spring.services.impls;
+package tn.esprit.spring.service.Implementation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import tn.esprit.spring.dao.entities.User;
-import tn.esprit.spring.dao.repositories.UserRepo;
+import tn.esprit.spring.entity.User;
+import tn.esprit.spring.repository.UserRepo;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

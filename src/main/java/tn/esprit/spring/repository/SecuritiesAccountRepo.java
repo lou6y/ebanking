@@ -1,9 +1,9 @@
-package tn.esprit.spring.dao.repositories;
+package tn.esprit.spring.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import tn.esprit.spring.dao.entities.SecuritiesAccount;
+import tn.esprit.spring.entity.SecuritiesAccount;
 
 @Repository
 public interface SecuritiesAccountRepo extends JpaRepository<SecuritiesAccount, Long>{

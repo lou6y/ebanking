@@ -1,4 +1,4 @@
-package tn.esprit.spring.controllers;
+package tn.esprit.spring.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import tn.esprit.spring.dao.entities.User;
-import tn.esprit.spring.services.inters.IUserService;
+import tn.esprit.spring.entity.User;
+import tn.esprit.spring.service.Interface.IUserService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

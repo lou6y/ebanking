@@ -1,4 +1,4 @@
-package tn.esprit.spring.dao.entities;
+package tn.esprit.spring.entity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;

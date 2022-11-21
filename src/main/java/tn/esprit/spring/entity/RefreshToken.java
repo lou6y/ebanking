@@ -1,4 +1,4 @@
-package tn.esprit.spring.dao.entities;
+package tn.esprit.spring.entity;
 
 import java.time.Instant;
 

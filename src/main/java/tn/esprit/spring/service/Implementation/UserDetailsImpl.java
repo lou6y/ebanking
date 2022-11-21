@@ -1,4 +1,4 @@
-package tn.esprit.spring.services.impls;
+package tn.esprit.spring.service.Implementation;
 
 import java.util.Collection;
 import java.util.List;
@@ -9,8 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import tn.esprit.spring.dao.entities.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import tn.esprit.spring.entity.User;
 
 public class UserDetailsImpl implements UserDetails {
 	  private static final long serialVersionUID = 1L;

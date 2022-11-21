@@ -1,9 +1,9 @@
-package tn.esprit.spring.services.inters;
+package tn.esprit.spring.service.Interface;
 
 import java.util.List;
 import java.util.Optional;
 
-import tn.esprit.spring.dao.entities.User;
+import tn.esprit.spring.entity.User;
 
 public interface IUserService {
 

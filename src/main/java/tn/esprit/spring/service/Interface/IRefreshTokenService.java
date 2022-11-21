@@ -1,8 +1,8 @@
-package tn.esprit.spring.services.inters;
+package tn.esprit.spring.service.Interface;
 
 import java.util.Optional;
 
-import tn.esprit.spring.dao.entities.RefreshToken;
+import tn.esprit.spring.entity.RefreshToken;
 
 public interface IRefreshTokenService {
 	public Optional<RefreshToken> findByToken(String token);
