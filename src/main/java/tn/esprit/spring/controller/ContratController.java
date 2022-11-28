@@ -17,7 +17,7 @@ import tn.esprit.spring.entity.Contrat;
 import tn.esprit.spring.service.Implementation.ContratServiceImpli;
 
 
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/contrats")
 public class ContratController {
