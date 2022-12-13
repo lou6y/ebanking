@@ -20,6 +20,7 @@ import tn.esprit.spring.entity.Stock;
 import tn.esprit.spring.exceptions.ApiException;
 import tn.esprit.spring.repository.SecuritiesAccountRepo;
 import tn.esprit.spring.repository.StockDataRepo;
+import tn.esprit.spring.service.Interface.ISecuritiesAccountService;
 
 @RestController
 @RequestMapping("/api/investment")
@@ -28,6 +29,8 @@ public class InvestmentController {
 StockDataRepo stockDataRepo;
 @Autowired
 SecuritiesAccountRepo securitiesAccountRepo;
+@Autowired
+ISecuritiesAccountService SaccountSer;
 
 @GetMapping("/refreshAccount")
 private void updateAccountInvestments(@RequestParam Long sAccountId) {
@@ -40,7 +43,8 @@ private void updateAccountInvestments(@RequestParam Long sAccountId) {
         }
     });
 
-    saccount.refresh();
+	SaccountSer.refresh(sAccountId);
+	securitiesAccountRepo.save(saccount);
 }
 
 private Optional<Investment> getInvestmentFromId(SecuritiesAccount saccount, Integer investmentId) {
@@ -64,41 +68,49 @@ private Optional<Investment> getInvestmentFromId(SecuritiesAccount saccount, Int
 @GetMapping("/investments")
 public List<Investment> getUserInvestments(@RequestParam Long sAccountId) {
 	SecuritiesAccount saccount = securitiesAccountRepo.findById(sAccountId).get();
-    this.updateAccountInvestments(sAccountId);
+    updateAccountInvestments(sAccountId);
     return saccount.getInvestments();
 }
 
 @PostMapping("/sell")
 public ResponseEntity<String> sellStock(@RequestParam Long sAccountId, @RequestBody Map<String, String> payload) {
 
-    String tempInvestmentId = payload.getOrDefault("investmentId", null);
-    String stockSymbol = payload.getOrDefault("stockSymbol", null);
-
+    String tempInvestmentId = payload.getOrDefault("investmentId","null");
+    String stockSymbol = payload.getOrDefault("stockSymbol","null");
+  
+    	
+    
     if (tempInvestmentId == null && stockSymbol == null) {
         throw new IllegalArgumentException("No investment or stockSymbol is provided");
     }
     
 	SecuritiesAccount saccount = securitiesAccountRepo.findById(sAccountId).get();
     this.updateAccountInvestments(sAccountId);
-
-    Optional<Investment> optionalInvestment = tempInvestmentId == null ? saccount.getInvestmentFromStock(stockSymbol) : saccount.getInvestmentFromId(Integer.parseInt(tempInvestmentId));
+    
+    
+    Optional<Investment> optionalInvestment = tempInvestmentId == null ? SaccountSer.getInvestmentFromStock(sAccountId, stockSymbol) : SaccountSer.getInvestmentFromId(sAccountId, Integer.parseInt(tempInvestmentId));
 
     if (optionalInvestment.isPresent()) {
 
         Investment investment = optionalInvestment.get();
-
+       
+        
+        
         int quantity = Integer.parseInt(payload.getOrDefault("quantity", investment.getQuantity().toString()));
 
-        Double sellingPrice = Double.parseDouble(payload.getOrDefault("sellingPrice", investment.getStock().getLTP().toString()));
+        
+        Double sellingPrice = Double.parseDouble(payload.getOrDefault("sellingPrice", investment.getStock().getPrice().toString()));
 
-        saccount.sell(investment, quantity, sellingPrice);
+        
+        
+        SaccountSer.sell(sAccountId,investment, quantity, sellingPrice);
 
     } else
         return ResponseEntity.badRequest().body("Invalid investment Id or stock Symbol ");
 
     securitiesAccountRepo.saveAndFlush(saccount);
 
-    return ResponseEntity.ok("Stock purchased successfully");
+    return ResponseEntity.ok("Stock sold successfully");
 
 }
 
@@ -148,10 +160,10 @@ public ResponseEntity<String> buyStock(@RequestParam Long sAccountId, @RequestBo
         }
     }
 
-    buyPrice = Double.parseDouble(payload.getOrDefault("buyPrice", stock.getLTP().toString()));
+    buyPrice = Double.parseDouble(payload.getOrDefault("buyPrice", stock.getPrice().toString()));
 
-    saccount.buy(stock, quantity, buyPrice);
-
+    
+    SaccountSer.buy(sAccountId, stock, quantity, buyPrice);
     securitiesAccountRepo.saveAndFlush(saccount);
 
     return ResponseEntity.ok("Stock purchased successfully");

@@ -96,11 +96,12 @@ public class StockDataRepo {
 
                 System.out.println("Stock: stock");
 
-                stock.setLTP(result.getLTP());
+                stock.setPrice(result.getPrice());
                 stock.setHigh(result.getHigh());
                 stock.setLow(result.getLow());
                 stock.setPreviousClose(result.getPreviousClose());
                 stock.setPreviousOpen(result.getPreviousOpen());
+                stock.setVolume(result.getVolume());
 
             } catch (JsonProcessingException e) {
                 e.printStackTrace();

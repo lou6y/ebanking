@@ -1,5 +1,6 @@
 package tn.esprit.spring.entity;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -18,7 +19,7 @@ public class Stock {
     private String name;
 
     @JsonAlias("05. price")
-    private Double LTP;
+    private Double price;
 
     @JsonAlias("02. open")
     private Double previousOpen;
@@ -31,6 +32,9 @@ public class Stock {
 
     @JsonAlias("04. low")
     private Double low;
+    
+    @JsonAlias("06. volume")
+    private BigDecimal volume;
 
     public Stock(String symbol) {
         this(symbol, symbol.split("\\.")[0]);
@@ -41,12 +45,11 @@ public class Stock {
         this.name = name;
     }
 
-   
 
 	@Override
 	public String toString() {
-		return "Stock [symbol=" + symbol + ", name=" + name + ", LTP=" + LTP + ", previousOpen=" + previousOpen
-				+ ", previousClose=" + previousClose + ", high=" + high + ", low=" + low + "]";
+		return "Stock [symbol=" + symbol + ", name=" + name + ", price=" + price + ", previousOpen=" + previousOpen
+				+ ", previousClose=" + previousClose + ", high=" + high + ", low=" + low + ", volume=" + volume + "]";
 	}
 
 	@Override
@@ -71,16 +74,17 @@ public class Stock {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Stock(String symbol, String name, Double lTP, Double previousOpen, Double previousClose, Double high,
-			Double low) {
+	public Stock(String symbol, String name, Double price, Double previousOpen, Double previousClose, Double high,
+			Double low, BigDecimal volume) {
 		super();
 		this.symbol = symbol;
 		this.name = name;
-		LTP = lTP;
+		this.price = price;
 		this.previousOpen = previousOpen;
 		this.previousClose = previousClose;
 		this.high = high;
 		this.low = low;
+		this.volume = volume;
 	}
 
 	public String getSymbol() {
@@ -99,12 +103,12 @@ public class Stock {
 		this.name = name;
 	}
 
-	public Double getLTP() {
-		return LTP;
+	public Double getPrice() {
+		return price;
 	}
 
-	public void setLTP(Double lTP) {
-		LTP = lTP;
+	public void setPrice(Double price) {
+		this.price = price;
 	}
 
 	public Double getPreviousOpen() {
@@ -137,6 +141,14 @@ public class Stock {
 
 	public void setLow(Double low) {
 		this.low = low;
+	}
+
+	public BigDecimal getVolume() {
+		return volume;
+	}
+
+	public void setVolume(BigDecimal volume) {
+		this.volume = volume;
 	}
 
 }
