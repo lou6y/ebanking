@@ -7,7 +7,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +23,7 @@ import tn.esprit.spring.exceptions.ApiException;
 import tn.esprit.spring.repository.SecuritiesAccountRepo;
 import tn.esprit.spring.repository.StockDataRepo;
 import tn.esprit.spring.service.Interface.ISecuritiesAccountService;
-
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/investment")
 public class InvestmentController {
@@ -65,21 +67,16 @@ private Optional<Investment> getInvestmentFromId(SecuritiesAccount saccount, Int
     return Optional.ofNullable(investment);
 }
 
-@GetMapping("/investments")
-public List<Investment> getUserInvestments(@RequestParam Long sAccountId) {
+@GetMapping("/investments/{sAccountId}")
+public List<Investment> getUserInvestments(@PathVariable Long sAccountId) {
 	SecuritiesAccount saccount = securitiesAccountRepo.findById(sAccountId).get();
     updateAccountInvestments(sAccountId);
     return saccount.getInvestments();
 }
 
-@PostMapping("/sell")
-public ResponseEntity<String> sellStock(@RequestParam Long sAccountId, @RequestBody Map<String, String> payload) {
+@PostMapping("/sell/{sAccountId}/{tempInvestmentId}/{stockSymbol}/{quantity}/{sellingPrice}")
+public ResponseEntity<String> sellStock(@PathVariable Long sAccountId, @PathVariable String tempInvestmentId,@PathVariable String stockSymbol,@PathVariable int quantity,@PathVariable Double sellingPrice) {
 
-    String tempInvestmentId = payload.getOrDefault("investmentId","null");
-    String stockSymbol = payload.getOrDefault("stockSymbol","null");
-  
-    	
-    
     if (tempInvestmentId == null && stockSymbol == null) {
         throw new IllegalArgumentException("No investment or stockSymbol is provided");
     }
@@ -93,16 +90,7 @@ public ResponseEntity<String> sellStock(@RequestParam Long sAccountId, @RequestB
     if (optionalInvestment.isPresent()) {
 
         Investment investment = optionalInvestment.get();
-       
-        
-        
-        int quantity = Integer.parseInt(payload.getOrDefault("quantity", investment.getQuantity().toString()));
-
-        
-        Double sellingPrice = Double.parseDouble(payload.getOrDefault("sellingPrice", investment.getStock().getPrice().toString()));
-
-        
-        
+               
         SaccountSer.sell(sAccountId,investment, quantity, sellingPrice);
 
     } else
@@ -115,17 +103,14 @@ public ResponseEntity<String> sellStock(@RequestParam Long sAccountId, @RequestB
 }
 
 
-@PostMapping("/buy")
-public ResponseEntity<String> buyStock(@RequestParam Long sAccountId, @RequestBody Map<String, String> payload) {
+@PostMapping("/buy/{sAccountId}/{sAccountId}/{tempInvestmentId}/{stockSymbol}/{quantity}/{sellingPrice}")
+public ResponseEntity<String> buyStock(@PathVariable Long sAccountId,@PathVariable String tempInvestmentId,@PathVariable String stockSymbol,@PathVariable int quantity,@PathVariable Double buyPrice) {
 
-    String tempInvestmentId = payload.getOrDefault("investmentId", null);
 
 	SecuritiesAccount saccount = securitiesAccountRepo.findById(sAccountId).get();
     this.updateAccountInvestments(sAccountId);
 
     Stock stock;
-    int quantity;
-    double buyPrice;
 
     if (tempInvestmentId != null) {
 
@@ -140,18 +125,15 @@ public ResponseEntity<String> buyStock(@RequestParam Long sAccountId, @RequestBo
 
         stock = investment.getStock();
 
-        quantity = Integer.parseInt(payload.getOrDefault("quantity", investment.getQuantity().toString()));
 
 
     } else {
-        String stockSymbol = payload.getOrDefault("stockSymbol", null);
 
         if (stockSymbol == null)
             return ResponseEntity.badRequest().body("stock symbol required");
 
         try {
             stock = this.stockDataRepo.getStockFromSymbol(stockSymbol);
-            quantity = Integer.parseInt(payload.getOrDefault("quantity", "0"));
 
             System.out.println("Successfully set: " + stock + " with q: " + quantity);
 
@@ -159,8 +141,6 @@ public ResponseEntity<String> buyStock(@RequestParam Long sAccountId, @RequestBo
             return ResponseEntity.badRequest().body("stock symbol/ investment Id required");
         }
     }
-
-    buyPrice = Double.parseDouble(payload.getOrDefault("buyPrice", stock.getPrice().toString()));
 
     
     SaccountSer.buy(sAccountId, stock, quantity, buyPrice);

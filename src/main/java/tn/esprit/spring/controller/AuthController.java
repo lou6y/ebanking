@@ -7,9 +7,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,6 +44,7 @@ import tn.esprit.spring.entity.User;
 import tn.esprit.spring.model.JwtResponse;
 import tn.esprit.spring.model.MessageResponse;
 import tn.esprit.spring.model.TokenRefreshResponse;
+import tn.esprit.spring.model.UserInfoResponse;
 import tn.esprit.spring.refreshtoken.exception.TokenRefreshException;
 
 
@@ -73,17 +77,24 @@ public class AuthController {
 
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-    String jwt = jwtUtils.generateJwtToken(userDetails);
+    ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
-    List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
+    List<String> roles = userDetails.getAuthorities().stream()
+        .map(item -> item.getAuthority())
         .collect(Collectors.toList());
-
+    
     RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+    
+    ResponseCookie jwtRefreshCookie = jwtUtils.generateRefreshJwtCookie(refreshToken.getToken());
 
-    return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
-        userDetails.getUsername(), userDetails.getEmail(), roles));
+    return ResponseEntity.ok()
+              .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+              .header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
+              .body(new UserInfoResponse(userDetails.getId(),
+                                         userDetails.getUsername(),
+                                         userDetails.getEmail(),
+                                         roles));
   }
-
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) throws UnsupportedEncodingException, MessagingException {
     if (userService.existsByUsername(signUpRequest.getUsername())) {
@@ -102,10 +113,11 @@ public class AuthController {
     User user = new User(signUpRequest.getUsername(), 
                signUpRequest.getEmail(),
                encoder.encode(signUpRequest.getPassword()));
-
+    
     Set<String> strRoles = signUpRequest.getRole();
     Set<Role> roles = new HashSet<>();
-    
+    Role Client = userService.findByName(ERole.CLIENT);
+    roles.add(Client);
     user.setRoles(roles);
     userService.saveUser(user);
     
@@ -117,25 +129,44 @@ public class AuthController {
   }
   
   @PostMapping("/refreshtoken")
-  public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
-    String requestRefreshToken = request.getRefreshToken();
+  public ResponseEntity<?> refreshtoken(HttpServletRequest request) {
+    String refreshToken = jwtUtils.getJwtRefreshFromCookies(request);
+    
+    if ((refreshToken != null) && (refreshToken.length() > 0)) {
+      return refreshTokenService.findByToken(refreshToken)
+          .map(refreshTokenService::verifyExpiration)
+          .map(RefreshToken::getUser)
+          .map(user -> {
+            ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(user);
+            
+            return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                .body(new MessageResponse("Token is refreshed successfully!"));
+          })
+          .orElseThrow(() -> new TokenRefreshException(refreshToken,
+              "Refresh token is not in database!"));
+    }
+    
+    return ResponseEntity.badRequest().body(new MessageResponse("Refresh Token is empty!"));
+  }
+    
+  @PostMapping("/signout")
+  public ResponseEntity<?> logoutUser() {
+    Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (principle.toString() != "anonymousUser") {      
+      Long userId = ((UserDetailsImpl) principle).getId();
+      refreshTokenService.deleteByUserId(userId);
+    }
+    
+    ResponseCookie jwtCookie = jwtUtils.getCleanJwtCookie();
+    ResponseCookie jwtRefreshCookie = jwtUtils.getCleanJwtRefreshCookie();
 
-    return refreshTokenService.findByToken(requestRefreshToken)
-        .map(refreshTokenService::verifyExpiration)
-        .map(RefreshToken::getUser)
-        .map(user -> {
-          String token = jwtUtils.generateTokenFromUsername(user.getUsername());
-          return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
-        })
-        .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
-            "Refresh token is not in database!"));
+    return ResponseEntity.ok()
+        .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+        .header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
+        .body(new MessageResponse("You've been signed out!"));
   }
-  
-  @PostMapping("/logout")
-  public ResponseEntity<?> logoutUser(@Valid @RequestBody LogOutRequest logOutRequest) {
-    refreshTokenService.deleteByUserId(logOutRequest.getUserId());
-    return ResponseEntity.ok(new MessageResponse("Log out successful!"));
-  }
+
   
   @GetMapping("/verify")
 	public String verifyUser(@RequestParam String code) {
@@ -147,10 +178,6 @@ public class AuthController {
 	public String forgotPassword(@RequestBody String email) throws UnsupportedEncodingException, MessagingException {
 
 		String response = userService.forgotPassword(email);
-
-		if (!response.startsWith("Invalid")) {
-			response = "http://localhost:8086/api/auth/reset-password?token=" + response;
-		}
 		//userService.sendEmail(email, response);
 		return response;
 	}

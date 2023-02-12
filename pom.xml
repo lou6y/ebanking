@@ -81,7 +81,15 @@
             <artifactId>springfox-boot-starter </artifactId>
             <version>3.0.0 </version>
         </dependency>
+<<<<<<< HEAD
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+       </dependency>
+	</dependencies>
+=======
 	   </dependencies>
+>>>>>>> 9af4c11bf9380a6906f873ec3f56ec4ceba9be9a
 
 	<build>
 		<plugins>

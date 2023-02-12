@@ -1,5 +1,6 @@
 package tn.esprit.spring.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,7 @@ import com.google.gson.JsonObject;
 
 import reactor.core.publisher.Mono;
 import tn.esprit.spring.entity.User;
+import tn.esprit.spring.repository.UserRepo;
 import tn.esprit.spring.service.Interface.IUserService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -29,7 +31,9 @@ import tn.esprit.spring.service.Interface.IUserService;
 @RequestMapping("/api/user")
 public class UserController {
 
-	 @Autowired
+	@Autowired
+	UserRepo userRepo;
+	@Autowired
 	  IUserService userService;
 	 
 	 @GetMapping("getAllUsers") 
@@ -85,14 +89,6 @@ public class UserController {
 	@PostMapping("/clusterprediction")
 	public String GetCluster(@RequestParam(name="Age") Integer Age,@RequestParam(name="AnnualIncome") Integer AnnualIncome,@RequestParam(name="SpendingScore") Integer SpendingScore,@RequestParam(name="Male") Integer Male,@RequestParam(name="Female") Integer Female)
 	{
-		//JsonObject jsobObject=new JsonObject();
-		//jsobObject.addProperty("Age", Age);
-		//jsobObject.addProperty("AnnualIncome", AnnualIncome);
-		//jsobObject.addProperty("SpendingScore", SpendingScore);
-		//jsobObject.addProperty("Male", Male);
-		//jsobObject.addProperty("Female", Female);
-		//System.out.println(jsobObject);
-		
 		int [][] data = {{Age,AnnualIncome,SpendingScore,Male,Female}};
 		
 		WebClient client = WebClient.create();
@@ -106,6 +102,28 @@ public class UserController {
 		    }).bodyToMono(String.class);
 		
 		return (response.block());
+	}
+	
+	@PostMapping("/cp/{username}")
+	public String AffectCluster(@PathVariable("username")String username)
+	{
+		
+		Optional<User> opuser = this.getUser(username);
+		User user = opuser.get();
+		@SuppressWarnings("deprecation")
+		int age = (new Date(System.currentTimeMillis()).getYear()) - user.getBirthday().getYear();
+		int annualincome = user.getAnnualIncome();
+		int spendingscore = user.getSpendingScore();
+		int male = 0;
+		int female=0;
+	    if (user.getGender() == "Male")
+	    male = 1;
+	    else 
+	    female = 1;
+		String cluster = this.GetCluster(age, annualincome, spendingscore, male, female);
+		user.setCluster(cluster);
+		userRepo.save(user);
+		return null;
 	}
 	
 }

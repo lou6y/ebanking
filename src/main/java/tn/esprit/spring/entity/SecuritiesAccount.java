@@ -8,10 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -33,6 +35,9 @@ public class SecuritiesAccount {
 	  @JsonManagedReference
 	  private List<Investment> investments;
 	  
+	  @JsonIgnore
+	  @ManyToOne()
+	  private User user;
 	  
 	  public SecuritiesAccount() {
 		super();
@@ -41,7 +46,7 @@ public class SecuritiesAccount {
 
 	public SecuritiesAccount(Long id, BigInteger rib, Double netInvested, Double netPortfolioValue,
 			Double unrealizedGains, Double unrealizedGainsPercentage, Double realizedGains,
-			Double realizedGainsPercentage, List<Investment> investments) {
+			Double realizedGainsPercentage, List<Investment> investments, User user) {
 		super();
 		this.id = id;
 		this.rib = rib;
@@ -53,6 +58,7 @@ public class SecuritiesAccount {
 		this.realizedGains = realizedGains;
 		this.realizedGainsPercentage = realizedGainsPercentage;
 		this.investments = investments;
+		this.user = user;
 	}
 
 	
@@ -136,5 +142,14 @@ public class SecuritiesAccount {
 	    this.unrealizedGains = unrealizedGains;
 	    this.setUnrealizedGainsPercentage(unrealizedGains * 100 / this.netInvested);
 	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
 	
 }
