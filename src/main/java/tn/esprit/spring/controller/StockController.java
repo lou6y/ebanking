@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +19,8 @@ import tn.esprit.spring.model.StockSearchResult;
 import tn.esprit.spring.repository.StockDataRepo;
 import tn.esprit.spring.repository.StockRepository;
 import tn.esprit.spring.entity.Stock;
+
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/stock")
 public class StockController {
@@ -33,26 +37,21 @@ public class StockController {
         return new ResponseEntity<>(stockDataRepo.searchForSymbol(stockName), HttpStatus.OK);
     }
 
-    @GetMapping("/stock")
-    public ResponseEntity<?> getStock(@RequestParam String symbol) throws ApiException {
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("content-type", "application/json");
-
+    @GetMapping("/stock/{symbol}")
+    public Stock getStock(@PathVariable String symbol) throws ApiException {
         try {
             Stock stock = stockDataRepo.getStockFromSymbol(symbol);
-            return new ResponseEntity<>(stock, httpHeaders, HttpStatus.OK);
+            return stock;
         } catch (IllegalArgumentException iae) {
             System.out.println("Caught an illegal argument exception");
-            return ResponseEntity.badRequest().headers(httpHeaders).body("No stock found for the symbol");
+            return null;
         }
     }
     
     @PostMapping("/addstock")
     public String addStock(@RequestParam String symbol) throws ApiException
     {
-    	ResponseEntity<?> re = getStock(symbol);
-    	Stock s = (Stock) re.getBody();
+    	Stock s = getStock(symbol);
     	stockRepo.save(s);
     	return "Stock added!";
     }

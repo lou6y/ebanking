@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -54,6 +56,12 @@ public class User {
 	  
 	  private String gender;
 	  
+	  private int annualIncome;
+	  
+	  private int spendingScore;
+	  
+	  private String Cluster;
+	  
 	  @Temporal (TemporalType.DATE)
 	  private Date creationDate;
 	  
@@ -72,6 +80,8 @@ public class User {
 	        inverseJoinColumns = @JoinColumn(name = "role_id"))
 	  private Set<Role> roles = new HashSet<>();
 	  
+	  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	  private Set<SecuritiesAccount> Saccounts;
 	  
 	public User() {
 		super();
@@ -85,8 +95,8 @@ public class User {
 	
 	public User(Long id, @NotBlank @Size(max = 20) String username, @NotBlank @Size(max = 50) @Email String email,
 			@NotBlank @Size(max = 120) String password, String name, String lastname, Date birthday, String gender,
-			Date creationDate, Boolean verified, String token, LocalDateTime tokenCreationDate, String verificationCode,
-			Set<Role> roles) {
+			int annualIncome,int spendingScore,String Cluster, Date creationDate, Boolean verified, String token, LocalDateTime tokenCreationDate, String verificationCode,
+			Set<Role> roles, Set<SecuritiesAccount> Saccounts) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -96,12 +106,16 @@ public class User {
 		this.lastname = lastname;
 		this.birthday = birthday;
 		this.gender = gender;
+		this.annualIncome = annualIncome;
+		this.spendingScore = spendingScore;
+		this.Cluster = Cluster;
 		this.creationDate = creationDate;
 		this.verified = verified;
 		this.token = token;
 		this.tokenCreationDate = tokenCreationDate;
 		this.verificationCode = verificationCode;
 		this.roles = roles;
+		this.Saccounts = Saccounts;
 	}
 
 	public Long getId() {
@@ -185,6 +199,13 @@ public class User {
 	}
 
 
+	public int getAnnualIncome() {
+		return annualIncome;
+	}
+
+	public void setAnnualIncome(int annualIncome) {
+		this.annualIncome = annualIncome;
+	}
 
 	public Date getCreationDate() {
 		return creationDate;
@@ -252,6 +273,30 @@ public class User {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	public int getSpendingScore() {
+		return spendingScore;
+	}
+
+	public void setSpendingScore(int spendingScore) {
+		this.spendingScore = spendingScore;
+	}
+
+	public String getCluster() {
+		return Cluster;
+	}
+
+	public void setCluster(String cluster) {
+		Cluster = cluster;
+	}
+
+	public Set<SecuritiesAccount> getSaccounts() {
+		return Saccounts;
+	}
+
+	public void setSaccounts(Set<SecuritiesAccount> saccounts) {
+		Saccounts = saccounts;
 	}
 	  
 	

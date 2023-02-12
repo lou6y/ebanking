@@ -1,8 +1,15 @@
 package tn.esprit.spring.service.Interface;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import javax.mail.MessagingException;
+
+import tn.esprit.spring.entity.ERole;
+import tn.esprit.spring.entity.Role;
+import tn.esprit.spring.entity.SecuritiesAccount;
 import tn.esprit.spring.entity.User;
 
 public interface IUserService {
@@ -32,6 +39,10 @@ public interface IUserService {
 	String modifyPassword(String username, String password);
 
 	String deleteUser(Long id);
+
+	Role findByName(ERole name);
+
+	Set<SecuritiesAccount> GetSaccount(String username);
 
 
 

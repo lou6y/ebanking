@@ -1,18 +1,30 @@
 package tn.esprit.spring.service.Implementation;
 
+import java.io.UnsupportedEncodingException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import net.bytebuddy.utility.RandomString;
+import tn.esprit.spring.entity.ERole;
+import tn.esprit.spring.entity.Role;
+import tn.esprit.spring.entity.SecuritiesAccount;
 import tn.esprit.spring.entity.User;
+import tn.esprit.spring.repository.RoleRepo;
 import tn.esprit.spring.repository.UserRepo;
 import tn.esprit.spring.service.Interface.IUserService;
 
@@ -20,6 +32,8 @@ import tn.esprit.spring.service.Interface.IUserService;
 public class UserServiceImpl implements IUserService{
 	@Autowired
 	UserRepo userRepo;
+	@Autowired
+	RoleRepo roleRepo;
 	private static final long EXPIRE_TOKEN_AFTER_MINUTES = 30;
 	BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
@@ -37,6 +51,11 @@ public class UserServiceImpl implements IUserService{
 	@Override
 	public Optional<User> findByUsername(String username) {
 		return userRepo.findByUsername(username);
+	}
+	
+	@Override
+	public Role findByName(ERole name) {
+		return roleRepo.findByName(name);
 	}
 	
 	@Override
@@ -63,6 +82,7 @@ public class UserServiceImpl implements IUserService{
 	    }
 	     
 	}
+	
 	
 	@Override
 	public String forgotPassword(String email) {
@@ -101,7 +121,7 @@ public class UserServiceImpl implements IUserService{
 		}
 
 		User user = userOptional.get();
-		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		user.setPassword(bCryptPasswordEncoder.encode(password));
 		user.setToken(null);
 		user.setTokenCreationDate(null);
 
@@ -211,5 +231,13 @@ public class UserServiceImpl implements IUserService{
 	{ 
 		userRepo.deleteById(id);
 		return "User has been successfully deleted !";
+	}
+	
+	@Override
+	public Set<SecuritiesAccount> GetSaccount( String username)
+	{
+		Optional<User> userOp = userRepo.findByUsername(username);
+		User user = userOp.get();
+		return user.getSaccounts();
 	}
 }
