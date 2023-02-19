@@ -1,5 +1,6 @@
 package tn.esprit.spring.service.Implementation;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,12 +8,10 @@ import org.springframework.stereotype.Service;
 
 import tn.esprit.spring.entity.Contrat;
 import tn.esprit.spring.repository.ContratRepo;
-import tn.esprit.spring.service.Interface.ContratService;
 
 @Service
-public class ContratServiceImpli implements ContratService {
+public class ContratServiceImpli implements Serializable {
 
-	
 	@Autowired
 	ContratRepo contractRep;
 	public List<Contrat> getContracts() {
@@ -45,10 +44,6 @@ public class ContratServiceImpli implements ContratService {
 	public Contrat getContract(Long id) {
 		return contractRep.findById(id).get();
 	}
-
-
-	
-	
 	
 
 }

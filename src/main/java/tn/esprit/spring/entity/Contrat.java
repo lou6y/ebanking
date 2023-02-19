@@ -17,7 +17,7 @@ public class Contrat {
 	@Id
 	@GeneratedValue (strategy = GenerationType.IDENTITY)
 	 @Column( name = "idContrat")
-	private long NumContrat; // Clee primaire
+	private int NumContrat; // Clee primaire
 	
 	@Temporal(TemporalType.DATE)
 	private Date date_debut ;
@@ -35,13 +35,11 @@ public class Contrat {
 
 	private int Duration;
 
-	
-
-	public long getNumContrat() {
+	public int getNumContrat() {
 		return NumContrat;
 	}
 
-	public void setNumContrat(long numContrat) {
+	public void setNumContrat(int numContrat) {
 		NumContrat = numContrat;
 	}
 

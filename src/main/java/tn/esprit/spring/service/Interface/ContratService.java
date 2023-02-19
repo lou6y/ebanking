@@ -7,7 +7,7 @@ import tn.esprit.spring.entity.Contrat;
 
 public interface ContratService {
 	
-List<Contrat> getContracts();
+List<Contrat> getContrats();
 	
 Contrat addContract(Contrat car);
 	
