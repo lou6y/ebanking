@@ -64,7 +64,6 @@ public class CustomerSatisfactionController {
 	}
 	
 	@PostMapping(value = "/predictCredit", consumes = MediaType.ALL_VALUE, produces = "application/json")
-
 	public PredictionResponse PredictCredit(@RequestBody PredictionCreditDto predictionCreditDto)
 	{
 		String uri = "http://127.0.0.1:5000/predictCredit";

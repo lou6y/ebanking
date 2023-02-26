@@ -14,18 +14,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.spring.entity.Offer;
-import tn.esprit.spring.service.Implementation.OfferServiceImpli;
+import tn.esprit.spring.service.Implementation.OfferServiceImpl;
 
 
 
 	
-	@CrossOrigin(origins = "http://localhost:4200")
+	@CrossOrigin(origins = "*")
 	@RestController
 	@RequestMapping("/offers")
 	public class OfferController {
 		
 		@Autowired
-		OfferServiceImpli offerServiceImpl;
+		OfferServiceImpl offerServiceImpl;
 		
 		@GetMapping("/")
 		public List<Offer> getOffers() {			
@@ -33,23 +33,23 @@ import tn.esprit.spring.service.Implementation.OfferServiceImpli;
 		}
 		
 		@PostMapping("/add")
-		public Offer addOffer(@RequestBody Offer offer){
+		public List<Offer> addOffer(@RequestBody Offer offer){
 			return offerServiceImpl.addOffer(offer);
 		}
 		
 		
-		@DeleteMapping("/{id}")  
-		public void deleteOffer(@PathVariable("id") Long id) {
-			offerServiceImpl.deleteOffer(id);
+		@DeleteMapping("/delete/{id}")  
+		public List<Offer> deleteOffer(@PathVariable("id") Long id) {
+			return offerServiceImpl.deleteOffer(id);
 		}
 		
-		@PutMapping("/{id}")
-		public Offer updateOffer(@PathVariable("id") Long id, @RequestBody Offer newOffer) {
+		@PostMapping("/update/{id}")
+		public List<Offer> updateOffer(@PathVariable("id") Long id, @RequestBody Offer newOffer) {
 			System.out.println(newOffer);
 			return offerServiceImpl.updateOffer(id, newOffer);
 		}
 
-		@GetMapping("/{id}")
+		@GetMapping("/get/{id}")
 		public Offer getContract(@PathVariable("id") Long id) {
 			return offerServiceImpl.getOffer(id);
 		}
