@@ -9,11 +9,11 @@ public interface ContratService {
 	
 List<Contrat> getContrats();
 	
-Contrat addContract(Contrat car);
+List<Contrat> addContract(Contrat car);
 	
-	void deleteContract(Long id);
+List<Contrat> deleteContract(Long id);
 	
-	Contrat updateContract(Long id, Contrat car);
+List<Contrat> updateContract(Long id, Contrat car);
 	
 	Contrat getContract(Long id);
 }

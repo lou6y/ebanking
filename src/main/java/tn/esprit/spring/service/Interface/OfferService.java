@@ -8,11 +8,11 @@ public interface OfferService {
 
 		List<Offer> getOffers();
 	
-		Offer addOffer(Offer car);
+		List<Offer> addOffer(Offer car);
 		
-		void deleteOffer(Long id);
+		List<Offer> deleteOffer(Long id);
 		
-		Offer updateOffer(Long id, Offer car);
+		List<Offer> updateOffer(Long id, Offer car);
 		
 		Offer getOffer(Long id);
 }
